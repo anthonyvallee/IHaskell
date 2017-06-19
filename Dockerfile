@@ -6,6 +6,14 @@ RUN apt-get update && apt-get install -y python-dev python-setuptools libmagic-d
 # Install Jupyter notebook
 RUN easy_install -U pip && pip install -U jupyter
 
+# Install jupyter-vim-binding extension
+ENV jupyter_extensions_dir $(jupyter --data-dir)/nbextensions
+RUN pip install jupyter_contrib_nbextensions
+RUN mkdir -p ${jupyter_extensions_dir}
+WORKDIR ${jupyter_extensions_dir}
+RUN git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
+RUN chmod -R go-w vim_binding
+
 # Install stack from the FPComplete repositories.
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442 && \
     echo 'deb http://download.fpcomplete.com/ubuntu trusty main' > /etc/apt/sources.list.d/fpco.list && \
